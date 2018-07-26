@@ -46,7 +46,7 @@ Extra-source-files:
 
 Library
   Hs-source-dirs: src
-  Ghc-options:    -Wall -fwarn-tabs
+  Ghc-options:    -Wall -fwarn-tabs -Wredundant-constraints
 
   Exposed-modules:
     Text.Digestive

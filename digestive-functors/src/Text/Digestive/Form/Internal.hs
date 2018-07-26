@@ -157,7 +157,7 @@ showForm form = case form of
 
 --------------------------------------------------------------------------------
 -- | Map on the value type
-transform :: (Monad m, Monoid v)
+transform :: Monad m
           => (a -> m (Result v b)) -> FormTree t v m a -> FormTree t v m b
 transform f (Map g x) = Map (\y -> g y `bindResult` f) x
 transform f x         = Map f x
@@ -195,13 +195,13 @@ children (Metadata _ x) = children x
 
 
 --------------------------------------------------------------------------------
-pushRef :: Monad t => Ref -> FormTree t v m a -> FormTree t v m a
+pushRef :: Ref -> FormTree t v m a -> FormTree t v m a
 pushRef = Ref
 
 
 --------------------------------------------------------------------------------
 -- | Operator to set a name for a subform.
-(.:) :: Monad m => Text -> Form v m a -> Form v m a
+(.:) :: Text -> Form v m a -> Form v m a
 (.:) = pushRef
 infixr 5 .:
 
@@ -396,7 +396,7 @@ forOptional f x  = case (x) of
 
 --------------------------------------------------------------------------------
 -- | Utility: bind for 'Result' inside another monad
-bindResult :: (Monad m, Monoid v)
+bindResult :: Monad m
            => m (Result v a) ->
            (a -> m (Result v b)) ->
            m (Result v b)

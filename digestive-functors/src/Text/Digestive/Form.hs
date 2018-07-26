@@ -100,7 +100,7 @@ type Formlet v m a = Maybe a -> Form v m a
 
 --------------------------------------------------------------------------------
 -- | Returns a 'Formlet' which may optionally take a default text
-text :: (Monad m, Monoid v) => Formlet v m Text
+text :: Formlet v m Text
 text def = Pure $ Text $ fromMaybe "" def
 
 
@@ -294,7 +294,7 @@ groupedChoiceWithMultiple' items def = map fst <$> (Pure $ Choice items def')
 
 --------------------------------------------------------------------------------
 -- | Returns a 'Formlet' for binary choices
-bool :: (Monad m, Monoid v) => Formlet v m Bool
+bool :: Formlet v m Bool
 bool = Pure . Bool . fromMaybe False
 
 
@@ -308,7 +308,7 @@ file = listToMaybe <$> Pure File
 -- | Returns a 'Formlet' for multiple file selection.  Intended for use with
 -- the @multiple@ attribute, which allows for multiple files to be uploaded
 -- with a single input element.
-fileMultiple :: (Monad m, Monoid v) => Form v m [FilePath]
+fileMultiple :: Form v m [FilePath]
 fileMultiple = Pure File
 
 
@@ -348,7 +348,7 @@ checkM err predicate form = validateM f form
 -- >
 -- > char :: Monad m => Form m String Char
 -- > char = validate head' (string Nothing)
-validate :: (Monad m, Monoid v) => (a -> Result v b) -> Form v m a -> Form v m b
+validate :: Monad m => (a -> Result v b) -> Form v m a -> Form v m b
 validate = validateM . (return .)
 
 --------------------------------------------------------------------------------
@@ -366,15 +366,12 @@ validate = validateM . (return .)
 -- >
 -- > char :: Monad m => Form m String (Maybe Char)
 -- > char = validateOptional head' (optionalString Nothing)
-validateOptional
-    :: (Monad m, Monoid v)
-    => (a -> Result v b) -> Form v m (Maybe a) -> Form v m (Maybe b)
+validateOptional :: Monad m => (a -> Result v b) -> Form v m (Maybe a) -> Form v m (Maybe b)
 validateOptional f = validate (forOptional f)
 
 --------------------------------------------------------------------------------
 -- | Version of 'validate' which allows monadic validations
-validateM
-    :: (Monad m, Monoid v) => (a -> m (Result v b)) -> Form v m a -> Form v m b
+validateM :: Monad m => (a -> m (Result v b)) -> Form v m a -> Form v m b
 validateM = transform
 
 --------------------------------------------------------------------------------
