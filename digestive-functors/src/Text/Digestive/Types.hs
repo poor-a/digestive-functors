@@ -17,7 +17,6 @@ module Text.Digestive.Types
 
 --------------------------------------------------------------------------------
 import           Control.Applicative (Applicative (..))
-import           Data.Monoid         (Monoid, mappend)
 
 
 --------------------------------------------------------------------------------
@@ -26,8 +25,8 @@ import qualified Data.Text           as T
 
 
 --------------------------------------------------------------------------------
--- | A mostly internally used type for representing Success/Error, with a
--- special applicative instance
+-- | A mostly internally used type for representing Success/Error.
+-- Functor, applicative, monad instances make it identical to `Either`.
 data Result v a
     = Success a
     | Error v
@@ -41,16 +40,14 @@ instance Functor (Result v) where
 
 
 --------------------------------------------------------------------------------
-instance Monoid v => Applicative (Result v) where
+instance Applicative (Result v) where
     pure x                  = Success x
-    Error x   <*> Error y   = Error $ mappend x y
-    Error x   <*> Success _ = Error x
-    Success _ <*> Error y   = Error y
-    Success x <*> Success y = Success (x y)
+    Error x   <*> _         = Error x
+    Success x <*> y         = fmap x y
 
 
 --------------------------------------------------------------------------------
-instance Monoid v => Monad (Result v) where
+instance Monad (Result v) where
     return x          = Success x
     (Error x)   >>= _ = Error x
     (Success x) >>= f = f x

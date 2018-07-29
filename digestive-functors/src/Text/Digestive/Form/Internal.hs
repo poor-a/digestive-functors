@@ -97,12 +97,12 @@ data FormTree t v m a where
 
 
 --------------------------------------------------------------------------------
-instance (Monad m, Monoid v) => Functor (FormTree t v m) where
+instance Monad m => Functor (FormTree t v m) where
     fmap = transform . (return .) . (return .)
 
 
 --------------------------------------------------------------------------------
-instance (Monad m, Monoid v) => Applicative (FormTree t v m) where
+instance Monad m => Applicative (FormTree t v m) where
     pure x  = Pure (Singleton x)
     x <*> y = App x y
 
